@@ -1,0 +1,53 @@
+<html>
+
+<head>
+    <title> Магазин бронежилетов </title>
+</head>
+
+<body>
+    <p><a href="/list/addVest">Новый товар</a></p>
+
+    <h1> Список товаров</h1>
+    <table border="1">
+        <tr>
+            <th>VestId</th>
+            <th>Наимен-ие</th>
+            <th>Цена</th>
+            <th>Кол-во</th>
+            <th>Класс брони</th>
+            <th>Материал</th>
+            <th>Размер</th>
+            <th>Производитель</th>
+        </tr>
+
+        {{#each Vests}}
+        <tr>
+            <td>{{this.id}}</td>
+            <td>{{this.name}}</td>
+            <td>{{this.price}}</td>
+            <td>{{this.stock_quantity}}</td>
+            <td>{{this.armor_class_id}}</td>
+            <td>{{this.material_id}}</td>
+            <td>{{this.size_id}}</td>
+            <td>{{this.manufacturer_id}}</td>
+            <td><a href="/list/editVest/{{this.id}}">Edit</a> </td>
+
+            <td> <a href="/sales/addToCart /{{this.id}}">В корзину</a></td>
+
+            <td>
+                <form action="/list/deleteVest/{{this.id}}" method="POST">
+                    <button type="submit" onclick="return confirm(
+                'Вы уверены, что хотите удалить этого товара?');">
+                        Delete
+                    </button>
+                </form>
+            </td>
+        </tr>
+        {{/each}}
+    </table>
+
+    <br />
+    Количество товаров в Корзине: {{cartLen}}
+    <br />
+    <a href="/sales/getCart">Оформление продажи</a> <br />
+    <a href="/clients">К списку клиентов</a>

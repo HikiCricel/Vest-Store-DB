@@ -1,0 +1,43 @@
+<html>
+
+<head>
+    <title>Редактирование данных товара</title>
+</head>
+
+<body>
+    <h2>Редактирование данных товара</h2>
+    <form action="/list/postEditVest" method="POST">
+        <input type="hidden" name="id" value="{{list.id}}" />
+
+        <label>Наимен-ие</label><br>
+        <input name="name" value="{{list.name}}" /><br>
+
+        <label>Цена</label><br>
+        <input name="price" type="number"
+               value="{{list.price}}" /><br>
+
+        <label>Количество</label><br>
+        <input name="stock_quantity" type="number"
+               value="{{list.stock_quantity}}" /><br><br>
+
+        <label>Класс брони</label><br>
+        <input name="armor_class_id" type="number"
+               value="{{list.armor_class_id}}" /><br><br>
+
+        <label>Материал</label><br>
+        <input name="material_id" type="number"
+               value="{{list.material_id}}" /><br><br>
+               
+        <label>Размер</label><br>
+        <input name="size_id" type="number"
+               value="{{list.size_id}}" /><br><br>
+               
+        <label>Производитель</label><br>
+        <input name="manufacturer_id" type="number"
+               value="{{list.manufacturer_id}}" /><br><br>
+        <input type="submit" value="Отправить" />        
+    </form>
+
+    <a href="/list">Список товаров</a>
+</body>
+</html>

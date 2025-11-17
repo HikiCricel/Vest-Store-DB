@@ -1,0 +1,41 @@
+<html>
+
+<head>
+    <title>Ввод данных нового товара</title>
+</head>
+
+<body>
+    <h1>Данные нового товара</h1>
+    <form action="/list/postAddVest" method="POST">
+        <label>VestId</label><br>
+        <input name="id" type="number" /> <br><br>
+
+        <label>Наимен-ие</label><br>
+        <input name="name" /><br><br>
+
+        <label>Цена</label><br>
+        <input name="price" type="number" /><br><br>
+
+        <label>Количество</label><br>
+        <input name="stock_quantity" type="number" />
+        <br><br>
+
+        <label>Класс брони</label><br>
+        <input name="armor_class_id" type="number" /><br><br>
+
+        <label>Материал</label><br>
+        <input name="material_id" type="number" /><br><br>
+
+        <label>Размер</label><br>
+        <input name="size_id" type="number" /><br><br>
+
+        <label>Производитель</label><br>
+        <input name="manufacturer_id" type="number" /><br><br>
+
+        <input type="submit" value="Отправить" />
+    </form>
+
+    <a href="/list">Все товары</a>
+</body>
+
+</html>
