@@ -1,27 +1,37 @@
-INSERT INTO armor_classes (class_name, protection_level, max_caliber) VALUES ('Бр1', 1, '9mm ПМ') RETURNING id;
+INSERT INTO armor_classes (class_name, protection_level, max_caliber) VALUES
+('Бр2', 2, '9mm ПМ'),
+('Бр3', 3, '7.62x39 мм'),
+('Бр4', 4, '7.62x54 мм'),
+('Бр5', 5, '7.62x51 мм'),
+('Бр6', 6, '12.7x108 мм');
 
-INSERT INTO materials (material_name, density, durability_rating, water_resistant) VALUES ('Арамидное волокно', 1.44, 8, true) RETURNING id;
+INSERT INTO materials (material_name, density, durability_rating, water_resistant) VALUES
+('Ультрамолекулярный полиэтилен', 0.97, 9, true),
+('Сталь', 7.85, 7, false),
+('Титановый сплав', 4.51, 10, false),
+('Керамика', 3.95, 6, false),
+('Гибридный композит', 2.8, 9, true);
 
-INSERT INTO sizes (size_name, chest_min_cm, chest_max_cm, height_min_cm, height_max_cm) VALUES ('L', 100, 110, 175, 185) RETURNING id;
+INSERT INTO sizes (size_name, chest_min_cm, chest_max_cm, height_min_cm, height_max_cm) VALUES
+('S', 85, 95, 160, 170),
+('M', 95, 105, 170, 180),
+('L', 105, 115, 175, 185),
+('XL', 115, 125, 180, 190),
+('XXL', 125, 135, 185, 195);
 
-INSERT INTO manufacturers (company_name, country, established_year) VALUES ('АрмТех', 'Россия', 2005) RETURNING id;
+INSERT INTO manufacturers (company_name, country, established_year) VALUES
+('Сафар-Защита', 'Россия', 2010),
+('Ratnik Industries', 'Россия', 2012),
+('СпецТехноАльянс', 'Беларусь', 2008),
+('UARMOR Global', 'США', 2003),
+('Turtle Defense', 'Германия', 1998),
+('Steel Shield Ltd', 'Украина', 2007),
+('Nordic Armor Systems', 'Швеция', 2011);
 
-INSERT INTO armor_products (name, price, stock_quantity, armor_class_id, material_id, size_id, manufacturer_id) VALUES (
-    'Тактический бронежилет "Щит-5"',
-    25000.00,
-    15,
-    1,  -- armor_class_id
-    1,  -- material_id  
-    1,  -- size_id
-    1   -- manufacturer_id
-) RETURNING id;
-
-INSERT INTO certificates (certificate_name) VALUES (
-    'ГОСТ Р 50744-95'
-) RETURNING id;  
-
-INSERT INTO product_certificates (armor_product_id, certificate_id, certificate_number) VALUES (
-    1,  -- id armor_products
-    1,  -- id certificates  
-    'ГОСТ-50744-12345'
-);
+INSERT INTO certificates (certificate_name) VALUES
+('ГОСТ Р 50854-2002'),
+('ТР ТС 018/2011'),
+('NIJ Standard-0101.06'),
+('VPAM APR 2018'),
+('STANAG 2920'),
+('MIL-STD-662F');

@@ -9,6 +9,59 @@
     <p><a href="/list/addVest">Новый товар</a></p>
 
     <h1> Список товаров</h1>
+    <form action="/list" method="GET">
+        <label for=" class-select ">Выберите класс брони:</label>
+        <select name="classId" id="class-select" value="{{this.ClassId}}">
+            <option value="0">Все классы брони</option>
+            <option value=1>Бр1</option>
+            <option value=2>Бр2</option>
+            <option value=3>Бр3</option>
+            <option value=4>Бр4</option>
+            <option value=5>Бр5</option>
+            <option value=6>Бр6</option>
+        </select>
+        Выбранный класс: <label id="classId">{{selectedClassId}}</label> <br />
+
+        <label for=" material-select ">Выберите материал:</label>
+        <select name="materialId" id="material-select" value="{{list.MaterialId}}">
+            <option value="0">Все материалы</option>
+            <option value=1>Арамидное волокно</option>
+            <option value=2>Ультрамолекулярный полиэтилен</option>
+            <option value=3>Сталь</option>
+            <option value=4>Титановый сплав</option>
+            <option value=5>Керамика</option>
+            <option value=6>Гибридный композит</option>
+        </select> <br />
+        Выбранный материал: <label id="materialId">{{selectedMaterialId}}</label> <br />
+
+        <label for=" size-select ">Выберите материал:</label>
+        <select name="sizeId" id="size-select" value="{{list.SizeId}}">
+            <option value="0">Все размеры</option>
+            <option value=1>S</option>
+            <option value=2>M</option>
+            <option value=3>L</option>
+            <option value=4>XL</option>
+            <option value=5>XXL</option>
+        </select> <br />
+        Выбранный размер: <label id="sizeId">{{selectedSizeId}}</label> <br />
+
+        <label for=" company-select ">Выберите материал:</label>
+        <select name="companyId" id="company-select" value="{{list.CompanyId}}">
+            <option value="0">Все производители</option>
+            <option value=1>АрмТех</option>
+            <option value=2>Сафар-Защита</option>
+            <option value=3>Ratnik Industries</option>
+            <option value=4>СпецТехноАльянс</option>
+            <option value=5>UARMOR Global</option>
+            <option value=6>Turtle Defense</option>
+            <option value=7>Steel Shield Ltd</option>
+            <option value=8>Nordic Armor Systems</option>
+        </select> <br />
+        Выбранный производитель: <label id="companyId">{{selectedCompanyId}}</label> <br />
+
+        <button type="submit">Фильтровать</button>
+    </form>
+
     <table border="1">
         <tr>
             <th>VestId</th>
