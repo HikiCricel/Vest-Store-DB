@@ -5,6 +5,7 @@ const urlencodedParser = express.urlencoded({ extended: false });
 
 // Загрузка пакета для работы с сервером PostgreSQL
 const { Pool } = require("pg");
+require('dotenv').config();
 
 const pool = new Pool({
     user: process.env.DB_USER,
@@ -41,15 +42,19 @@ app.get("/about", function (req, res) {
 app.get("/list", async function (req, res) {
     try {
         const result = await pool.query(`
-            SELECT * FROM public.armor_products 
-            ORDER BY id ASC
+            SELECT ap.*, ac.class_name AS armor_class_name, m.material_name AS material_name, s.size_name AS size_name, mf.company_name AS manufacturer_name
+            FROM armor_products ap
+            LEFT JOIN armor_classes ac ON ap.armor_class_id = ac.id
+            LEFT JOIN materials m ON ap.material_id = m.id
+            LEFT JOIN sizes s ON ap.size_id = s.id
+            LEFT JOIN manufacturers mf ON ap.manufacturer_id = mf.id
+            ORDER BY ap.id ASC
         `);
 
         const vests = result.rows;
         res.render("Tables", { Vests: vests });
     } catch (err) {
-        console.error("Ошибка при загрузке списка товаров:", err);
-        res.status(500).send("Ошибка сервера");
+        console.error("Download Product list Error:", err)
     }
 });
 
@@ -65,21 +70,16 @@ app.get("/list/addVest", async function (req, res) {
 });
 
 app.post("/list/postAddVest", urlencodedParser, async function (req, res) {
+    if (!req.body) return res.sendStatus(400);
 
     try {
-        if (!req.body) return res.sendStatus(400);
+        const {
+            id, name, price, stock_quantity,
+            armor_class_id, material_id, size_id, manufacturer_id
+        } = req.body;
 
-        const VestId = req.body.id;
-        const name = req.body.name;
-        const Price = req.body.price;
-        const stock_quantity = req.body.stock_quantity;
-        const armor_class_id = req.body.armor_class_id;
-        const material_id = req.body.material_id;
-        const size_id = req.body.size_id;
-        const manufacturer_id = req.body.manufacturer_id;
-
-        const result = await pool.query("INSERT INTO armor_products (id, name, price, stock_quantity, armor_class_id, material_id, size_id, manufacturer_id) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)",
-            [VestId, name, Price, stock_quantity, armor_class_id, material_id, size_id, manufacturer_id], function (err, data) {
+        await pool.query("INSERT INTO armor_products (id, name, price, stock_quantity, armor_class_id, material_id, size_id, manufacturer_id) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)",
+            [id, name, price, stock_quantity, armor_class_id, material_id, size_id, manufacturer_id], function (err, data) {
                 res.redirect("/list");
             });
     }
@@ -97,46 +97,49 @@ app.get("/list/editVest/:id", async function (req, res) {
         );
 
         if (result.rows.length === 0) {
-            return res.status(404).send("Product not found");
+            console.log("Not Found")
         }
 
         res.render("vestEdit", {
             list: result.rows[0]
         });
     } catch (err) {
-        console.error("Render product for Update Error:", err);
-        res.status(500).send("Service Error");
+        console.error("Render product for Update Error:", err)
     }
 });
 
-app.post("/list/postEditVest", urlencodedParser, function (req, res) {
-
+app.post("/list/postEditVest", urlencodedParser, async function (req, res) {
     if (!req.body) return res.sendStatus(400);
 
-    const id = req.body.id;
-    const name = req.body.name;
-    const price = req.body.price;
-    const stock_quantity = req.body.stock_quantity;
-    const armor_class_id = req.body.armor_class_id;
-    const material_id = req.body.material_id;
-    const size_id = req.body.size_id;
-    const manufacturer_id = req.body.manufacturer_id;
+    try {
+        const {
+            id, name, price, stock_quantity,
+            armor_class_id, material_id, size_id, manufacturer_id
+        } = req.body;
 
-    pool.query("UPDATE armor_products SET name=$2, price=$3, stock_quantity=$4, armor_class_id=$5, material_id=$6, size_id=$7, manufacturer_id=$8 WHERE id=$1",
-        [id, name, price, stock_quantity, armor_class_id, material_id, size_id, manufacturer_id], function (err, data) {
-            if (err) return console.log(err);
+        await pool.query("UPDATE armor_products SET name=$2, price=$3, stock_quantity=$4, armor_class_id=$5, material_id=$6, size_id=$7, manufacturer_id=$8 WHERE id=$1", [
+            id, name, price, stock_quantity,
+            armor_class_id, material_id, size_id, manufacturer_id
+        ]);
 
-            res.redirect("/list");
-        });
+        res.redirect("/list");
+    } catch (err) {
+        console.error("Update Product Error:", err);
+    }
 });
 
 app.post("/list/deleteVest/:id", async function (req, res) {
-    const id = req.params.id;
-    pool.query("DELETE FROM armor_products WHERE id=$1", [id],
-        function (err, data) {
-            if (err) return console.log(err);
-            res.redirect("/list");
-        });
+    try {
+        const id = req.params.id;
+        pool.query("DELETE FROM armor_products WHERE id=$1", [id],
+            function (err, data) {
+                if (err) return console.log(err);
+                res.redirect("/list");
+            });
+    }
+    catch {
+        console.log("Database Delete Error");
+    }
 });
 
 
