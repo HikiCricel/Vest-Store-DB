@@ -1,43 +1,50 @@
 <html>
 
 <head>
-    <title>Редактирование данных товара</title>
+       <title>Редактирование данных товара</title>
 </head>
 
 <body>
-    <h2>Редактирование данных товара</h2>
-    <form action="/list/postEditVest" method="POST">
-        <input type="hidden" name="id" value="{{list.id}}" />
+       <h2>Редактирование данных товара</h2>
+       <form action="/list/postEditVest" method="POST">
+              <input type="hidden" name="id" value="{{list.id}}" />
 
-        <label>Наимен-ие</label><br>
-        <input name="name" value="{{list.name}}" /><br>
+              <label>Наимен-ие</label><br>
+              <input name="name" value="{{list.name}}" /><br>
 
-        <label>Цена</label><br>
-        <input name="price" type="number"
-               value="{{list.price}}" /><br>
+              <label>Цена</label><br>
+              <input name="price" type="number" value="{{list.price}}" /><br>
 
-        <label>Количество</label><br>
-        <input name="stock_quantity" type="number"
-               value="{{list.stock_quantity}}" /><br><br>
+              <label>Количество</label><br>
+              <input name="stock_quantity" type="number" value="{{list.stock_quantity}}" /><br><br>
 
-        <label>Класс брони</label><br>
-        <input name="armor_class_id" type="number"
-               value="{{list.armor_class_id}}" /><br><br>
+              <label>Класс брони</label><br>
+              <select name="armor_class_id" value="{{list.armor_class_id}}">
+                     <option value="">Выберите класс брони</option>
+                     <option value= 1 >Бр1</option>
+              </select><br><br>
 
-        <label>Материал</label><br>
-        <input name="material_id" type="number"
-               value="{{list.material_id}}" /><br><br>
-               
-        <label>Размер</label><br>
-        <input name="size_id" type="number"
-               value="{{list.size_id}}" /><br><br>
-               
-        <label>Производитель</label><br>
-        <input name="manufacturer_id" type="number"
-               value="{{list.manufacturer_id}}" /><br><br>
-        <input type="submit" value="Отправить" />        
-    </form>
+              <label>Материал</label><br>
+              <select name="material_id" value="{{list.material_id}}">
+                     <option value="">Выберите материал</option>
+                     <option value= 1 >Арамидное волокно</option>
+              </select><br><br>
 
-    <a href="/list">Список товаров</a>
+              <label>Размер</label><br>
+              <select name="size_id" value="{{list.size_id}}">
+                     <option value="">Выберите размер</option>
+                     <option value= 1 >L</option>
+              </select><br><br>
+
+              <label>Производитель</label><br>
+              <select name="manufacturer_id" value="{{list.manufacturer_id}}">
+                     <option value="">Выберите производителя</option>
+                     <option value= 1 >АрмТех</option>
+              </select><br><br>
+              <input type="submit" value="Отправить" />
+       </form>
+
+       <a href="/list">Список товаров</a>
 </body>
+
 </html>

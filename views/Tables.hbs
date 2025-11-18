@@ -5,6 +5,7 @@
 </head>
 
 <body>
+    <p><a href="/">На Главную</a></p><br>
     <p><a href="/list/addVest">Новый товар</a></p>
 
     <h1> Список товаров</h1>
@@ -26,10 +27,10 @@
             <td>{{this.name}}</td>
             <td>{{this.price}}</td>
             <td>{{this.stock_quantity}}</td>
-            <td>{{this.armor_class_id}}</td>
-            <td>{{this.material_id}}</td>
-            <td>{{this.size_id}}</td>
-            <td>{{this.manufacturer_id}}</td>
+            <td>{{this.armor_class_name}}</td>
+            <td>{{this.material_name}}</td>
+            <td>{{this.size_name}}</td>
+            <td>{{this.manufacturer_name}}</td>
             <td><a href="/list/editVest/{{this.id}}">Edit</a> </td>
 
             <td> <a href="/sales/addToCart /{{this.id}}">В корзину</a></td>
