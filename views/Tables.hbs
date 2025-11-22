@@ -20,7 +20,7 @@
             <option value=5>Бр5</option>
             <option value=6>Бр6</option>
         </select>
-        Выбранный класс: <label id="classId">{{selectedClassId}}</label> <br />
+        Выбранный класс: <label id="classId">{{selectedClassId}}</label>
 
         <label for=" material-select ">Выберите материал:</label>
         <select name="materialId" id="material-select" value="{{list.MaterialId}}">
@@ -43,7 +43,7 @@
             <option value=4>XL</option>
             <option value=5>XXL</option>
         </select> <br />
-        Выбранный размер: <label id="sizeId">{{selectedSizeId}}</label> <br />
+        Выбранный размер: <label id="sizeId">{{selectedSizeId}}</label>
 
         <label for=" company-select ">Выберите материал:</label>
         <select name="companyId" id="company-select" value="{{list.CompanyId}}">
@@ -86,7 +86,7 @@
             <td>{{this.manufacturer_name}}</td>
             <td><a href="/list/editVest/{{this.id}}">Edit</a> </td>
 
-            <td> <a href="/sales/addToCart /{{this.id}}">В корзину</a></td>
+            <td> <a href="/sales/addToCart/{{this.id}}">В корзину</a></td>
 
             <td>
                 <form action="/list/deleteVest/{{this.id}}" method="POST">
