@@ -3,6 +3,8 @@ const express = require("express");
 const app = express();
 const urlencodedParser = express.urlencoded({ extended: false });
 
+let cart = [];
+
 // Загрузка пакета для работы с сервером PostgreSQL
 const { Pool } = require("pg");
 require('dotenv').config();
@@ -13,14 +15,6 @@ const pool = new Pool({
     database: process.env.DB_NAME,
     password: process.env.DB_PASSWORD,
     port: process.env.DB_PORT,
-});
-
-pool.query('SELECT NOW()', (err, res) => {
-    if (err) {
-        console.error('Error connecting to the database', err.stack);
-    } else {
-        console.log('Connected to the database:', res.rows);
-    }
 });
 
 // Использование представления hbs
@@ -46,6 +40,7 @@ app.get("/list", async function (req, res) {
         const materialId = req.query.materialId;
         const sizeId = req.query.sizeId;
         const companyId = req.query.companyId;
+        const cartLenght = cart.length;
 
         let query = `
             SELECT 
@@ -70,7 +65,7 @@ app.get("/list", async function (req, res) {
             params.push(classId);    // Параметр SQL-запроса
             paramIndex++;
         }
-        
+
         if (materialId && materialId !== '0' && materialId !== '') {   // Если запрос содержит параметра devId
             filters.push(`ap.material_id = $${paramIndex}`); // Условие фильтрации
             params.push(materialId);    // Параметр SQL-запроса
@@ -135,16 +130,17 @@ app.get("/list", async function (req, res) {
         `);
         const companies = companyResult.rows;
 
-        res.render("Tables", { 
-            Vests: vests, 
-            Classes: armor_classes, 
+        res.render("Tables", {
+            Vests: vests,
+            Classes: armor_classes,
             Materials: materials,
             Sizes: sizes,
             Companies: companies,
-            selectedClassId: classId || '0', 
+            selectedClassId: classId || '0',
             selectedMaterialId: materialId || '0',
             selectedSizeId: sizeId || '0',
             selectedCompanyId: companyId || '0',
+            cartLen: cartLenght
         });
     } catch (err) {
         console.error("Download Product list Error:", err)
@@ -163,8 +159,6 @@ app.get("/list/addVest", async function (req, res) {
 });
 
 app.post("/list/postAddVest", urlencodedParser, async function (req, res) {
-    if (!req.body) return res.sendStatus(400);
-
     try {
         const {
             id, name, price, stock_quantity,
@@ -202,8 +196,6 @@ app.get("/list/editVest/:id", async function (req, res) {
 });
 
 app.post("/list/postEditVest", urlencodedParser, async function (req, res) {
-    if (!req.body) return res.sendStatus(400);
-
     try {
         const {
             id, name, price, stock_quantity,
@@ -235,6 +227,184 @@ app.post("/list/deleteVest/:id", async function (req, res) {
     }
 });
 
+app.get("/clients", async function (req, res) {
+    try {
+        pool.query("SELECT * FROM clients", function (err, result) {
+            if (err) return console.log(err);
+
+            const clients = result.rows;
+
+            // Передача данных на представление
+            res.render("clients", {
+                Clients: clients
+            });
+        });
+    }
+    catch (err) {
+        console.error("Download Client list Error:", err)
+    }
+});
+
+app.get("/clients/addClient", async function (req, res) {
+    try {
+        res.render("addClient");
+    }
+    catch (err) {
+        console.log("Client Create Error")
+    }
+});
+
+app.post("/clients/postAddClient", urlencodedParser, async function (req, res) {
+    try {
+        const {
+            client_name, birth_year, address,
+            phone
+        } = req.body;
+
+
+        await pool.query("INSERT INTO clients (client_name, birth_year, address, phone) VALUES ($1, $2, $3, $4)",
+            [client_name, birth_year, address,
+                phone], function (err, data) {
+                    res.redirect("/clients");
+                });
+    }
+    catch (err) {
+        console.log("Client Post Error")
+    }
+});
+
+app.get("/clients/editClient/:id", async function (req, res) {
+    try {
+        const id = req.params.id;
+        const result = await pool.query(
+            "SELECT * FROM clients WHERE id=$1",
+            [id]
+        );
+
+        if (result.rows.length === 0) {
+            console.log("Not Found")
+        }
+
+        res.render("clientEdit", {
+            clients: result.rows[0]
+        });
+    } catch (err) {
+        console.error("Render product for Update Error:", err)
+    }
+});
+
+app.post("/clients/postEditClient", urlencodedParser, async function (req, res) {
+    if (!req.body) return res.sendStatus(400);
+
+    try {
+        const {
+            id, client_name, birth_year, address,
+            phone
+        } = req.body;
+
+        await pool.query("UPDATE clients SET client_name=$2, birth_year=$3, address=$4, phone=$5 WHERE id=$1", [
+            id, client_name, birth_year, address,
+            phone
+        ]);
+
+        res.redirect("/clients");
+    } catch (err) {
+        console.error("Update Product Error:", err);
+    }
+});
+
+app.get("/sales/addToCart/:id", urlencodedParser, async function (req, res) {
+    try {
+        const id = req.params.id;
+        // Выбор товара из базы данных
+        await pool.query("SELECT * FROM armor_products WHERE id=$1", [id], function (err, result) {
+
+            const vest = result.rows[0];
+            // Добавление товара в массив cart[]
+            cart.push(vest);
+
+            // Переход на страницу просмотра списка товаров
+            res.redirect("/list");
+        });
+    }
+    catch (err) {
+        console.error("Add to Cart Error:", err);
+    }
+});
+
+app.get("/sales/getCart", async function (req, res) {
+    try {
+        // Вычисление стоимости товаров в Корзине
+        const totalPrice = cart.reduce((total, vest) => {
+            // Очищаем строку от лишних символов и преобразуем в число
+            const priceStr = String(vest.price).replace(/[^\d.,-]/g, '');
+            const priceNum = parseFloat(priceStr.replace(',', '.'));
+
+            return total + (isNaN(priceNum) ? 0 : priceNum);
+        }, 0);
+
+        const clientResult = await pool.query("SELECT id, client_name FROM clients ORDER BY client_name ASC");
+        const clients = clientResult.rows;
+
+        res.render("Cart", {
+            cartVest: cart,
+            totalPrice: totalPrice.toFixed(2),
+            Clients: clients
+        });
+    }
+    catch (err) {
+        console.log("Get Cart Error");
+    }
+});
+
+app.post("/sales/cartToHistory", urlencodedParser, async function (req, res) {
+    try{
+        const clientId = req.body.client_id;
+        const vastid = req.body.armor_product_id;
+        // cart.forEach(vest => {
+        //     pool.query("INSERT INTO history (armor_product_id, client_id, sell_date) VALUES ($1, $2, NOW()::timestamp without time zone)",
+        //         [vest.id, clientId], async function (err) {
+        //             if (err) console.log(err);
+        //         });
+        // });
+        const insertPromises = cart.map(vest => {
+            return pool.query(
+                "INSERT INTO history (armor_product_id, client_id, sell_date) VALUES ($1, $2, NOW()::timestamp without time zone)",
+                [vastid, clientId]
+            );
+        });
+
+        await Promise.all(insertPromises);
+    
+        // Очищаем корзину после оформления заказа
+        cart = [];
+    
+        res.redirect("/list");
+    }
+    catch(err){
+        console.log("Post Cart History Error");
+    }
+});
+
+app.get("/clients/getHistory/:client_id", async function (req, res) {
+    try{
+        const clientId = req.params.client_id;
+    
+        // Отбор покупок клиента из таблицы History
+        await pool.query("SELECT * FROM history WHERE client_id=$1", [clientId],
+            function (err, result) {
+                if (err) return console.log(err);
+                const history = result.rows;
+    
+                res.render("history", {
+                    History: history
+                });
+            });
+    }
+    catch(err){
+        console.log("Get Cart History Error");
+    }
+});
 
 app.listen(3000, function () {
     console.log("Server is ready to Connect...");

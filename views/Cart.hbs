@@ -1,0 +1,41 @@
+<h1>Корзина</h1>
+
+<h1>Оформление заказа</h1>
+
+<h2>Корзина</h2>
+{{#if cartVest.length}}
+<table border="1">
+    <tr>
+        <th>Наимен-ие</th>
+        <th>Цена</th>
+        <th>Кол-во</th>
+    </tr>
+
+    {{#each cartVest}}
+    <tr>
+        <td>{{this.name}}</td>
+        <td>{{this.price}}</td>
+        <td>{{this.stock_quantity}}</td>
+        {{/each}}
+</table>
+
+<br />
+Всего на {{totalPrice}} рублей
+<br />
+<a href="/list"> Назад к списку товаров </a>
+<br /> <br />
+
+<form action="/sales/cartToHistory" method="POST">
+    <select name="client_id" id="client-select">
+        <option value="0">Выберите Клиента:</option>
+        {{#each Clients}}
+           <option value="{{this.id}}">  {{this.client_name}}</option>
+        {{/each}}
+    </select>
+
+    <button type="submit"> Оплатить заказ </button>
+</form>
+
+{{else}}
+<p>Ваша корзина пуста!</p>
+{{/if}}
