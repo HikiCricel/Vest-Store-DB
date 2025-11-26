@@ -1,5 +1,5 @@
 <head>
-    <title> Список клиентов салона  </title>
+    <title> Список клиентов салона </title>
 </head>
 
 <body>
@@ -26,7 +26,7 @@
             <td>{{this.phone}}</td>
 
             <td> <a href="/clients/editClient/{{this.id}}">Edit</a> </td>
-            <td> <a href="/clients/getHistory/{{this.id}}">История</a></td>
+            <td> <a href="/sales/getHistory/{{this.id}}">История</a></td>
         </tr>
         {{/each}}
 
@@ -36,4 +36,5 @@
     <a href="/list">К списку товаров</a>
 
 </body>
+
 </html>

@@ -1,0 +1,30 @@
+<html>
+
+<head>
+  <title>Редактирование данных товара</title>
+</head>
+
+<body>
+  <h2>Редактирование данных клиента</h2>
+  <form action="/clients/postEditClient" method="POST">
+    <input type="hidden" name="id" value="{{clients.id}}" />
+
+    <label>Имя</label><br>
+    <input name="client_name" value="{{clients.client_name}}" /><br>
+
+    <label>Год рож.</label><br>
+    <input name="birth_year" value="{{clients.birth_year}}" /><br>
+
+    <label>Адрес</label><br>
+    <input name="address" value="{{clients.address}}" /><br>
+
+    <label>Телефон</label><br>
+    <input name="phone" value="{{clients.phone}}" /><br><br>
+
+    <input type="submit" value="Отправить" />
+  </form>
+
+  <a href="/clients">Список клиентов</a>
+</body>
+
+</html>
