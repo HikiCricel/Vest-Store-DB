@@ -63,7 +63,7 @@ exports.cartToHistory = async function (req, res) {
         await Promise.all(insertPromises);
 
         // Очищаем корзину после оформления заказа
-        cart = [];
+        cart.length = 0;
 
         res.redirect("/list");
     }
